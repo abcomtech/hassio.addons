@@ -1,6 +1,6 @@
 {
 	"name": "Oalpr",
-	"version": "0.1",
+	"version": "0.2",
 	"slug": "oalpr",
 	"description": "**TEST** Oalpr for Home Assistant",
 	"url": "https://github.com/wlatic/hassio.addons/blob/master/oalpr/readme.md",
