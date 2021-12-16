@@ -12,7 +12,8 @@ RUN apt-get update && \
     DEBIAN_FRONTEND="noninteractive" apt-get --yes --option Dpkg::Options::="--force-confnew" --no-install-recommends install && \
     apt-get install libopencv-dev libtesseract-dev python3-pip git cmake build-essential libleptonica-dev --yes && \
     apt-get install liblog4cplus-dev libcurl3-dev python3-numpy --yes && \
-    pip3 install Flask && \
+    pip3 install markupsafe && \
+    pip3 install Flask && \    
     pip3 install requests
 
 RUN cd /root && \
