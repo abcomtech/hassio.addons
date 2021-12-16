@@ -46,6 +46,6 @@ def signal_handler(sig, frame):
 try:
     signal.signal(signal.SIGINT, signal_handler)
     logging.info('ALPR loaded. Ready to recognize')
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0',port=5001)
 except Exception as e:
     logging.error("Exception occurred", exc_info=True)
