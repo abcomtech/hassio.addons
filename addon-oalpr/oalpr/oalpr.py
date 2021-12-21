@@ -1,8 +1,9 @@
 import logging
 import signal
 import sys
+from base64 import b64decode
 
-from flask import Flask
+from flask import Flask, request, jsonify
 from openalpr import Alpr
 
 LOG_FILE = '/config/oalpr/log/oalpr.log'
@@ -11,18 +12,23 @@ IMAGE_FILE = '/config/oalpr/data/plate.jpg'
 logging.basicConfig(filename=LOG_FILE, filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO)
 
 app = Flask(__name__)
-lpr = Alpr("us", "/etc/openalpr/openalpr.conf", "/usr/share/openalpr/runtime_data")
-lpr.set_default_region("us")
+lpr = Alpr("eu", "/etc/openalpr/openalpr.conf", "/usr/share/openalpr/runtime_data")
+#lpr.set_default_region("eu")
 if not lpr.is_loaded():
     logging.error("Error loading OpenALPR")
     sys.exit(1)
 
 
-@app.route('/plate')
-def do_it():
+@app.route('/recognize', methods=['POST'])
+def recognize():
     logging.info("Starting recognition")
-
-    lpr_results = lpr.recognize_file(IMAGE_FILE)
+    image_bytes = request.form.get("image_bytes")    
+    image = b64decode(image_bytes)    
+    with open("/config/oalpr/data/uploaded.jpg","wb") as f :
+        f.write(image)
+    lpr_results = lpr.recognize_array(image)
+    logging.info(f"Starting recognition {lpr_results}")   
+    
     recognized_plates = ""
     for result in lpr_results["results"]:
         recognized_plates = result["plate"]
@@ -34,8 +40,7 @@ def do_it():
 
     logging.info(text)
 
-    return text
-
+    return jsonify({'plate' : lpr_results})
 
 def signal_handler(sig, frame):
     logging.info('Received SIGINT. Unloading ALPR')
