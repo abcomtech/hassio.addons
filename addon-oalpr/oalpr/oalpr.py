@@ -23,10 +23,13 @@ if not lpr.is_loaded():
 def recognize():
     logging.info("Starting recognition")
     image_bytes = request.form.get("image_bytes")    
-    image = b64decode(image_bytes)    
-    with open("/config/oalpr/data/uploaded.jpg","wb") as f :
-        f.write(image)
+    image = b64decode(image_bytes)  
+
+    country = request.args.get("country","eu")
+    lpr.set_country(country)
+
     lpr_results = lpr.recognize_array(image)
+    #lpr_results = lpr.recognize_file(IMAGE_FILE)
     logging.info(f"Starting recognition {lpr_results}")   
     
     recognized_plates = ""
